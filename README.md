@@ -761,10 +761,241 @@ And finally use mask 16 to drill hole to bring the interconnects outside
 
 ![image](https://github.com/user-attachments/assets/1a40a1df-b509-48fd-beaf-1c90b9777d82)
 
-
-
-
 This covers the 16 masks for a CMOS process.
+
+## Delay table
+A delay table characterizes how long a gate (e.g., inverter, NAND) takes to switch its output from one logic state to another based on:
+- Input transition time (slew)
+- Output load (capacitance)
+
+It helps in modeling gate behavior under different operating conditions.
+![image](https://github.com/user-attachments/assets/e011629c-e7c0-4d38-bd7a-6b3019e2823b)
+For example, suppose we want to find the delay for a circuit with input skew of 40 ps and output load of 50 ps. Then, x9 will be the delay. Suppose we want to find the delay for a value not available in the table, then we create an equation based on the known set of data, from which an equation will be deduced and the value will be extrapolated.
+
+There are a few observations:
+If the load felt by buffers at every load is the same, then the delay is the same.
+Similarly, identical buffers must be at the same level to make the clock delay the same or to keep the slack minimal.
+
+Setup timing analysis:
+We use an ideal clock first and then use a real clock for analysis.
+For now, let’s assume the clock frequency of F = 1 GHz and clock period T = 1/F = 1 ns.
+
+![image](https://github.com/user-attachments/assets/1556dbe5-a6ec-4c6e-ae48-4c770ad79ebe)
+
+Lets assume the above circuit.
+And the signal change by the first flop must be captured by the second flop in next subsequent clock.
+For this to happen the combination delay of the circuit between the flop must be less than the time period.
+![image](https://github.com/user-attachments/assets/f233a5f2-4c80-4ee5-b41d-f7488624d0a1)
+But in sequential circuits there is a concept of setup time which says for a flop to capture the input the input signal must be stable atleast by the setup time unit. And hence reduce the available time.
+![image](https://github.com/user-attachments/assets/1ec7aa9e-b5c1-4290-84f8-c2d3d7e98bd8)
+Similarly there is an uncertainty in the clock source and it is not highly accurate. And that clock cannot generate clock at exactly zero so some variations is ought to occur so the time difference between two clock edges will not be exactly T. This is called clock jitter.
+![image](https://github.com/user-attachments/assets/77f530e8-993a-44dd-8b6d-db0e9e58b84f)
+
+So to model the jitter into our analysis we bring it  in,
+
+![image](https://github.com/user-attachments/assets/7563dd7d-17b0-4312-9a21-205d416bb7f4)
+
+So lets perform thee setup time analysis in our circuit,
+But when it come to real circuit we also need to include the wire delay also with that,
+![image](https://github.com/user-attachments/assets/09f8d021-ddb3-4aed-bfea-7fa18c91751f)
+![image](https://github.com/user-attachments/assets/7c29d76d-590e-45e3-98f7-6be6af33f299)
+
+
+## Clock tree synthesis CTS
+Clock Tree Synthesis (CTS) is a critical step in digital ASIC physical design that focuses on distributing the clock signal uniformly across all sequential elements—typically flip-flops—in a chip. The primary goal of CTS is to minimize clock skew (the difference in arrival times of the clock signal at different elements) and clock latency (the delay from the clock source to its endpoints) to ensure reliable and synchronous operation of the circuit. During CTS, a clock tree is constructed using buffers, inverters, and sometimes clock gating cells, arranged in a hierarchical fashion from the root (clock source) to the leaves (flip-flops or registers). By balancing wire lengths and buffer stages, CTS ensures that the clock signal reaches all endpoints as simultaneously as possible, thus optimizing setup and hold time margins. It also plays a crucial role in power optimization and signal integrity by managing the clock network's capacitance and power consumption.
+
+
+For example,
+ ![image](https://github.com/user-attachments/assets/a8c3987a-62cc-458c-afa9-8ff561ca5d75)
+
+Consider the above circuit the delay in wire for FF1 and FF2 is not same and hence will create a skew which is not wanted.
+So we devop a tree such that the clock signal reaches all the flop at almost same delay this is done using midpoint strategy like this,
+![image](https://github.com/user-attachments/assets/c910ee81-2415-48cf-8abb-8bd09c1b975e)
+There are various trees like this and most commonly used are , ‘H’ ‘I’ ‘X’ etc..
+This is the completed circuit,
+
+![image](https://github.com/user-attachments/assets/cd612ac6-c969-46b5-a36c-36eea78a4860)
+But wait, here is a catch: the clock lines are so long that the clock signal will be affected by their resistance and capacitance, which should not happen. The solution is to use buffers again, but these are not the same buffers which we used for logic. These buffers are carefully created so that the rise time and fall time remain the same for all.
+![image](https://github.com/user-attachments/assets/35f8f38d-2ff1-43d9-b9a8-478501183f37)
+
+
+Next since clock signal is the heartbeat of our circuit we cannot leave simply because it might get corrupted or disturbed by cross talk so to protect the clock nets by shielding using wires around it which are connected to ground or Vcc meaning they don’t change. Without shielding there is a high possibility of glitch. The following image describe the glitch,
+
+
+![image](https://github.com/user-attachments/assets/97b288b1-5023-4d77-97e7-0bb660147240)
+![image](https://github.com/user-attachments/assets/f4edacaf-1fff-452e-b649-471ccf0d1068)
+And if this happens in any critical area it might cause the entire system to get corrupted.
+
+![image](https://github.com/user-attachments/assets/206da2d9-a66b-4e1c-83a8-dd16e601de72)
+Now since we added buffer we need to consider the delays through them,
+So the analysis change like this,
+
+![image](https://github.com/user-attachments/assets/f017b112-97db-4410-8140-10c4f9f810f3)
+
+The above equation simplifies to 
+ ![image](https://github.com/user-attachments/assets/9a4faf50-bca2-4cc0-9dd9-12e8fb951c57)
+
+And the difference is called skew.
+Including the setup time and jitter we get the complete equation,
+ ![image](https://github.com/user-attachments/assets/52a50e87-37fa-4398-9729-b06e99151d1e)
+And the below image explains about the slack, data required time and arrival time,
+
+![image](https://github.com/user-attachments/assets/258691c2-11c0-44af-bd4c-a701cb645b81)
+
+## Holdtime analysis
+The hold time is the minimum time after the active edge of the clock for which the input must be stable. And the anlysis syas that the the combinational delay must be greater than the hold delay,
+
+![image](https://github.com/user-attachments/assets/c772fc39-2607-4de6-9f78-8f6bc9e856b7)
+Adding buffer delay the equation comes out like this,
+![image](https://github.com/user-attachments/assets/f5ad1e16-94f6-44ef-9844-2d4fb42b06a6)
+
+## Routing
+
+Routing is a key stage in the physical design of integrated circuits (ICs) where electrical connections (wires) are established between the various components (like standard cells, macros, or I/O pins) laid out on the silicon.  
+Routing is typically divided into two phases:
+
+### 1. Global Routing
+- Determines approximate paths for connections (called nets).
+- Divides the chip into routing regions or grids.
+- Assigns each net to a routing region, estimating congestion and guiding detailed routing.
+
+### 2. Detailed Routing
+- Performs actual wire placement layer by layer.
+- Considers design rules (e.g., minimum spacing, via rules, metal layers).
+- Ensures no shorts, opens, or DRC (Design Rule Check) violations.
+
+### Lee’s Algorithm (Maze Routing)
+
+Lee’s Algorithm, also called Maze Routing, is a classic algorithm used in the detailed routing stage to find the shortest path between two points on a grid, often used in grid-based routing.
+
+#### How It Works
+
+It treats the routing space as a 2D grid, and works in two phases:
+
+#### 1. Wave Propagation (Expansion Phase)
+- Starting from the source point, it propagates a wavefront outward by labeling neighboring grid points with increasing distance (cost).
+- For each new point visited, its value is set to:  
+  `value = current_value + 1`
+- Obstacles (occupied cells, forbidden zones) are blocked.
+- The wave continues until it reaches the target.
+
+#### 2. Backtracing (Traceback Phase)
+- Once the destination is reached, the algorithm traces back by always moving to the neighboring cell with a lower value, until the source is reached.
+- This gives the shortest path in terms of grid steps.
+
+This algorithm always uses the shortest path and the one with the least amount of bends in it. The routing is also controlled by the DRC rules.
+
+### DRC Check
+
+The few minimum rules that need to be followed by tools while designing, some of them are:
+
+1. Minimum width
+![image](https://github.com/user-attachments/assets/82884db3-8a76-4095-bf2f-05dacdcaf410)
+
+The width cannot be below this one. This is the physical limitation by the manufacturing process associated with it.
+
+2.	Wire pitch
+![image](https://github.com/user-attachments/assets/741a2d24-ba65-4abf-b574-277052483c4e)
+The center to centre distance cannot be less than =the wire pitch.
+
+3.	Wire spacing 
+The minimum space between two wire should not be less than wire spacing.
+
+![image](https://github.com/user-attachments/assets/1b03f631-96f6-4543-bb88-7913deb54cc7)
+DRC  also make sure that two wire of same layer do not cross each or become short unless it is done in the RTL design itself.
+
+This is rectified by taking one wire to another layer, from this,
+
+![image](https://github.com/user-attachments/assets/d88f8083-0eb1-4e2f-9a4e-37574dcb38ca)
+To this,
+![image](https://github.com/user-attachments/assets/8146b231-437e-4548-b93a-a93a28aff8f0)
+Some more DRC rules regarding via are,
+![image](https://github.com/user-attachments/assets/42635e87-8f0d-43f6-94f8-c10440ab6df0)
+Minimum width of via as shown above.
+
+![image](https://github.com/user-attachments/assets/6c5a7ee4-e684-47b4-99fb-1668e1b278a0)
+minimum via spacing as shown above.
+
+The step after DRC is parasitic parameter extraction which is done through spice softwares which will generate spef file.
+
+## TRITONROUTE
+Now we will look into Triton Route the opensource software used for routing.
+
+It is done through two stages,
+![image](https://github.com/user-attachments/assets/9d699507-5821-4389-b19a-c395682e3be4)
+The detail route does the proper routing adhering to all the DRC rules and netlist.
+
+The routing is done layer wise. And the routing of lower layer runs first and then the upper layer. All vias are created only during the process of upper layer routing only.
+
+The output of fast route is the initial route guide,
+ ![image](https://github.com/user-attachments/assets/f34eac2c-5653-4757-8869-64529c5d7f2e)
+
+The above image tells the process of the initial route.
+
+All layers have a rpeffered direction. If the layer is used in not preferred direction then it will be atke to the other layers wherever required.
+
+The intial route guide ccan be read with the following ideas,
+
+![image](https://github.com/user-attachments/assets/98e3c238-b7bc-41bc-a175-fbd2a1b30887)
+There are three types of routing,
+![image](https://github.com/user-attachments/assets/5219f76d-5804-48f1-a95b-68e61fbd08cc)
+
+1. Intra-layer Routing
+Definition:
+Intra-layer routing refers to routing that occurs entirely within a single metal layer (e.g., all wires are drawn on Metal-1 or Metal-2).
+Key Characteristics:
+•	Simpler routing—no need for vias.
+•	Used when short connections can be completed on the same layer.
+•	Common in short nets or local interconnects.
+Limitation:
+•	Limited space → may cause congestion in dense layouts.
+•	Cannot cross over obstacles or other wires unless multiple routing layers are used.
+________________________________________
+2. Inter-layer Routing
+Definition:
+Inter-layer routing involves connecting wires across different metal layers using vias.
+Example:
+A net may start on Metal-1, rise via a via1 to Metal-2, and continue routing there.
+Key Characteristics:
+•	Offers more routing resources, avoids congestion.
+•	Allows routing over obstacles by changing layers.
+
+Common Metal Layer Convention:
+•	Metal-1: horizontal
+•	Metal-2: vertical
+•	Metal-3: horizontal
+
+
+For the triton route detail route the input outputs are given below,
+
+
+![image](https://github.com/user-attachments/assets/e917dbd0-ae21-431b-ae0a-faf9ef9c11da)
+
+How does triton route handle connectivity 
+
+It uses Access points.
+![image](https://github.com/user-attachments/assets/89677515-b85c-4184-ae60-fb18941b9d0b)
+![image](https://github.com/user-attachments/assets/4232995b-18ce-407b-882f-59b2007f032f)
+•  Preprocessing:
+•	During pin access analysis, TritonRoute identifies all legal access points on each pin (usually on M1 or M2 layers).
+•	It considers metal enclosure rules, via constraints, and DRC-clean geometry.
+•  Routing Phase:
+•	When connecting nets, TritonRoute chooses the best access point for each pin based on:
+o	Shortest path
+o	Congestion
+o	DRC clean routing
+•	It builds a path from source AP → track → destination AP.
+
+The following shows the routing algorithm,
+![image](https://github.com/user-attachments/assets/f1429c4a-f44c-4671-9c5e-0423a82cd6ab)
+
+
+
+
+
+
+
+
 
 
 
