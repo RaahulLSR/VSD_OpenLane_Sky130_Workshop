@@ -35,18 +35,18 @@
   - [Routing](#routing)
   - [TRITONROUTE](#tritonroute)
 - [LAB](#lab)
-- [Directory setup](#directory-setup)
-- [What is a .lef File?](#what-is-a-lef-file)
-- [Synthesis](#synthesis)
-- [Floor plan.](#floor-plan)
-- [Review of floor plan in magic](#review-of-floor-plan-in-magic)
-- [Placement](#placement)
-- [NGspice](#ngspice)
-- [Setup timing analysis:](#setup-timing-analysis)
-- [Clock tree synthesis CTS](#clock-tree-synthesis-cts)
-- [Holdtime analysis](#holdtime-analysis)
-- [Routing](#routing)
-- [TritinRoute](#tritinroute)
+  - [Directory setup](#directory-setup)
+  - [What is a .lef File?](#what-is-a-lef-file)
+  - [Synthesis](#synthesis)
+  - [Floor plan.](#floor-plan)
+  - [Review of floor plan in magic](#review-of-floor-plan-in-magic)
+  - [Placement](#placement)
+  - [NGspice](#ngspice)
+  - [Setup timing analysis:](#setup-timing-analysis)
+  - [Clock tree synthesis CTS](#clock-tree-synthesis-cts)
+  - [Holdtime analysis](#holdtime-analysis)
+  - [Routing](#routing)
+  - [TritinRoute](#tritinroute)
 - [conclusion](#conclusion)
 
 # Theory
@@ -1644,9 +1644,22 @@ The final step will  be read_stef to do the post rout parasitic analysis.
 
 # conclusion
 
+This repository serves as a comprehensive walkthrough of the digital ASIC design backend flow using open-source tools and the Sky130 PDK. From RTL to GDSII, each stage has been detailed with supporting visuals, real tool outputs, and practical insights gained through the VSD workshop.
+
+Key takeaways include:
+- Understanding of open-source RTL and EDA tools like Yosys, OpenROAD, and Magic.
+- Hands-on application of the OpenLane flow for physical design automation.
+- Deep insights into timing analysis, power planning, antenna effects, and routing challenges.
+- Exposure to the SkyWater 130nm process and characterization fundamentals.
+
+This documentation is intended not just as a record of the workshop but as a valuable resource for anyone beginning their journey in custom ASIC design with open-source tools.
+
+> Special thanks to VSD, OpenLane, SkyWater, and the entire open-source hardware community for enabling such accessible learning platforms.
 
 
 
+# References
+[https://www.vlsisystemdesign.com/rtl-design-using-verilog-with-sky130-technology/](https://www.vlsisystemdesign.com/digital-vlsi-soc-design-and-planning/)
 
 
 
