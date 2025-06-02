@@ -1410,6 +1410,7 @@ And the command is
 Which gives a detailed timing report like this 
 
 
+![image](https://github.com/user-attachments/assets/fe1099a1-e4b7-42a4-b79f-2affa14a9ab5)
 
 
 
@@ -1429,6 +1430,7 @@ This will invoke tritoncts the opensource cts tool.
 Now 
 
 
+![image](https://github.com/user-attachments/assets/405e0338-fce5-4180-be91-bf7ab5a9ddbc)
 
 
 
@@ -1439,14 +1441,16 @@ Now
 Cts.v file is created with the results in it
 This is what is contained inside the cts file,
 
+![image](https://github.com/user-attachments/assets/4dfb51ec-222e-4d1f-a0ce-0d493b5ceb6e)
 
 
 
 
 
 When we invoke run_cts
-The following is excutred,
+The following is executed,
 
+![image](https://github.com/user-attachments/assets/cfa179eb-31fe-4d39-b3b7-269dc2eb6f13)
 
 
 
@@ -1455,6 +1459,7 @@ The following is excutred,
 
 Now lets analyze the clock tree using the STA tool which is integrated  inside the openroad tools itself instead of calling open STA.
 To open openroad 
+![image](https://github.com/user-attachments/assets/f3aa47cf-6e5a-463c-9121-a9864fbec9ce)
 
 
 
@@ -1492,10 +1497,12 @@ gen_pdn
 
 
 
+![image](https://github.com/user-attachments/assets/7fc1a6f5-2ae4-4ffe-8072-77e9769a05b2)
 
 
 
 As you can see the pitch shown here. And remember always the standard cell must in multiples of pitch otherwise the power connects cannot be placed in properly on power grid.
+![image](https://github.com/user-attachments/assets/0e03173e-9c58-44f6-ba4f-22317574b822)
 
 
 
@@ -1521,6 +1528,7 @@ It takes a bit long time to execute
 There are two types of routing
 
 
+![image](https://github.com/user-attachments/assets/52a59a25-6134-4e4e-a353-c780c41c3d75)
 
 
 
@@ -1531,6 +1539,7 @@ In the OpenLane flow, TritonRoute is the detailed router used after global routi
 
 The stats and log shows the effort take by the triton route to complete the routing like this,
 
+![image](https://github.com/user-attachments/assets/a5eade7a-c7ec-4042-8261-74ea5233517c)
 
 
 
@@ -1543,6 +1552,7 @@ The stats and log shows the effort take by the triton route to complete the rout
 
 Here if there are few vilation which we might need to manually correct it and remove the violation to get a clean DRC.
 As we can see in the temp directory 
+![image](https://github.com/user-attachments/assets/76fc7bed-a659-4aa5-81ae-591970771bde)
 
 
 
@@ -1561,6 +1571,7 @@ And these are the various designs which we created are here,
 
 
 
+![image](https://github.com/user-attachments/assets/21e455cd-f4b3-4c70-93ec-02b95e3ee8b4)
 
 
 The final step will  be read_stef to do the post rout parasitic analysis.
