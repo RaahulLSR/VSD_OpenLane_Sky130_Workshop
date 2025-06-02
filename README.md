@@ -1,4 +1,22 @@
 # VSD_OpenLane_Sky130_Workshop
+## Introduction
+
+This repository documents the backend flow of VLSI design, assuming that we already have a fully verified RTL design that has been synthesized, verified, and for which a netlist has been generated and validated.
+
+In this repo, we will demonstrate how to transform the synthesized netlist into a complete physical design. The stages we will cover include:
+
+- Floorplanning  
+- Placement and Routing (PnR)  
+- Clock Tree Synthesis (CTS)  
+- Static Timing Analysis (STA)  
+- Design Rule Check (DRC)  
+
+We will use the **PicoRV32** — a small and stable RISC-V core — as our RTL design for this backend flow.
+
+Additionally, we will create a **standard cell library** that will be used to generate the netlist from the RTL code. We will analyze critical aspects of the design, such as **hold time**, **setup time**, and more.
+
+For the backend flow, we will utilize **OpenLane** and the **SkyWater 130nm PDK**. This repo is divided into section the first section dives into the detailed theory and information, while the second part details about the Lab sessions and practical implementation of the learned theory. 
+
 ## Contents
 # VSD_OpenLane_Sky130_Workshop
 - [Introduction](#introduction)
