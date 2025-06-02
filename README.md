@@ -1410,6 +1410,12 @@ And the command is
 Which gives a detailed timing report like this 
 
 
+
+
+
+
+
+
 Which can be used to optimize the design.
 We can also use replace command to replace a slower cell with a faster cell but since we have zero slack already it is being skipped. But if modification are done we must use
 Write_verilog 
@@ -1422,6 +1428,142 @@ Command : cts
 This will invoke tritoncts the opensource cts tool.
 Now 
 
+
+
+
+
+
+
+
+
+Cts.v file is created with the results in it
+This is what is contained inside the cts file,
+
+
+
+
+
+
+When we invoke run_cts
+The following is excutred,
+
+
+
+
+
+
+
+Now lets analyze the clock tree using the STA tool which is integrated  inside the openroad tools itself instead of calling open STA.
+To open openroad 
+
+
+
+
+
+
+
+First step is to read the lef
+Using the command 
+read_lef
+
+next red the def file
+read_def
+next step is to 
+write_db <file_name>
+
+next we will read the Verilog file after cts with the clock buffers
+command : read_verilog <file_name>
+
+next read the library file
+command : read_liberty <file_name>
+set clock using
+command : set_propagated_clock [all_clocks]
+
+next to generate report
+report_checks.
+This will give us the new stats.
+
+Now before doing further analysis we need to modify the used libraries and then re run the anlsysis and see the impact of the change in the design
+
+After all the analsysis the last step is to build the power distribution network
+To generate the netwokrkk the command is 
+gen_pdn
+
+
+
+
+
+
+
+As you can see the pitch shown here. And remember always the standard cell must in multiples of pitch otherwise the power connects cannot be placed in properly on power grid.
+
+
+
+
+
+
+
+
+
+The image here explains the power planning 
+In the above image the green area is logic die while the yellow boxes are pads
+And the red and blue are power lines.
+This is how the power distribution network will be created.
+
+
+The next and the last step is routing
+The pdn.def is def file which has all the details which we have created.
+
+The command to run routing
+Command : run_routing
+There are various parameters in routing configure it configure it according to the need and start the routing
+It takes a bit long time to execute
+There are two types of routing
+
+
+
+
+
+
+
+
+In the OpenLane flow, TritonRoute is the detailed router used after global routing is completed. Global routing provides an abstract connection plan by dividing the layout into coarse grids and estimating approximate paths between pins, ensuring that routing is feasible without conflicts. It doesn't consider exact wire shapes or design rules. Once global routing is complete, detailed routing with TritonRoute takes over to generate precise, design rule–compliant metal tracks and vias. It finalizes the actual physical wires, resolves congestion, and ensures that the design meets all layout constraints. TritonRoute plays a critical role in producing a manufacturable layout.
+
+The stats and log shows the effort take by the triton route to complete the routing like this,
+
+
+
+
+
+
+
+
+
+
+
+Here if there are few vilation which we might need to manually correct it and remove the violation to get a clean DRC.
+As we can see in the temp directory 
+
+
+
+
+
+
+A file named fastroute.guide is created which has the details  and nets created by the fast route.
+
+This marks the end of the first stage PNR after this post sta analysis and parasitic analysis has t o be done on the created design.
+The next step is SPEF extraction which is done outside openlan flow.
+To invoke SPEF_extractor
+Go the spef directory run the main.py file with the def and lef file which will generate a new spef file.
+
+And these are the various designs which we created are here,
+
+
+
+
+
+
+The final step will  be read_stef to do the post rout parasitic analysis.
 
 
 
