@@ -336,7 +336,7 @@ Next step is to feed all the inputs from the above step to characterization soft
 - .libs  
 - Function  
 
-Timing threshold definition:
+## Timing threshold definition
 ![image](https://github.com/user-attachments/assets/41fd85c4-5c86-4f74-91cf-5c26a7da6339)
 1. Slew Low Rise Threshold (slew_low_rise_thr)  
 Definition: The lower voltage level (typically a percentage of VDD) used as the starting point of the rising edge for measuring slew.  
@@ -398,7 +398,7 @@ Typical value: 50% of VDD
 
 Purpose: Marks the point at which the output is considered to have "fallen".  
 
-Propagation delay  
+## Propagation delay  
 Let's take the following condition  
 
 ![image](https://github.com/user-attachments/assets/02a79f05-59c1-4be1-b55a-0409836ffc09)
@@ -421,8 +421,9 @@ Spice deck
 Step-by-Step: SPICE Deck Creation for CMOS Inverter  
 Step 1: Title Line  
 Every SPICE deck starts with a title line. This line is ignored by the simulator for calculations but is useful for documentation.  
-* CMOS Inverter Simulation  
-________________________________________  
+
+## CMOS Inverter Simulation  
+
 Step 2: Define Nodes and Transistors  
 Write the netlist using MOSFET models (e.g., PMOS and NMOS). Each line describes one component.  
 Assume the following connections:  
@@ -499,7 +500,7 @@ plot v(in) v(out)
 .end  
 
 ## The 16-Mask CMOS Process  
-Introduction  
+### Introduction  
 The 16-mask CMOS process is a standard planar CMOS fabrication technique used to manufacture integrated circuits that contain both NMOS and PMOS transistors. It involves a sequence of photolithographic steps, each defined by a mask, to selectively process regions of a silicon wafer. The 16 masks collectively create regions for wells, isolation, doping, gate formation, contacts, and interconnects.  
 
 This process is called “16-mask” because it uses 16 separate photolithographic masks, though the exact number can vary slightly depending on the foundry or specific technology node.  
@@ -527,7 +528,7 @@ Here’s an overview of the typical 16 masks used in a CMOS process:
 | 16 | Metal2                       | Second layer of metal interconnect.                       |
   
 
-1 selecting substrate  
+1. selecting substrate  
 It has the following characteristics,  
 P-type, high resistivity (950 ohms), doping level (10^15 cm^-3), orientation (100). The doping must be less than well doping.
 
@@ -654,8 +655,8 @@ From the top, the mask 6 looks like this.
 And next, we etch away the other poly layer and the mask to result in the following structure.  
 ![image](https://github.com/user-attachments/assets/2aeccd71-04b7-4bfe-a9a0-ea70ba65c58e)
 
-LDD formation  
-
+### LDD formation  
+---
 What is LDD?  
 • LDD is a lightly doped region between the channel and heavily doped source/drain.  
 • It reduces the electric field near the drain, minimizing hot carrier injection and device degradation.  
@@ -698,6 +699,9 @@ Next, as usual, we cover the n-well and expose the p-well to ion implant.
 
 And the gate protects the area below it from ion implantation while the exposed area is implanted with phosphorus. The doping concentration and energy is chosen such that it doesn’t penetrate so deep and just stays there and the doping is kept low and hence called LDD. A similar work is done on the n-side as well.  
 ![image](https://github.com/user-attachments/assets/bc1eafb5-684c-4936-8bc0-7f85a8ac96d6)
+
+### side wall spacers
+
 Next we create side wall spacers,
 We first deposit Si3N4 on the trnaisitor,
 ![image](https://github.com/user-attachments/assets/ae4d0ccc-c3fe-4f05-b55c-90b5296e4347)
@@ -705,6 +709,8 @@ And then perform anistropic etching which removes Si3N4 from other regions but p
 ![image](https://github.com/user-attachments/assets/c7549b54-d7d2-4120-b21e-1ee8baa1d069)
 This protects the Lightly doped region below it.
 
+### Thin layer of oxide
+---
 The next step is form a thin layer of oxide to prevent the effect of channelling. It is the effect that happens when the vector velocity of ions of match with crystalline structure of p type substrate if that happens then the ions will move deep into the p substrate without any reaction at the surface. The oxide layer kind off disperses the ions as it enters the layer.
 The next we cover the nwell and expose the pwell to arsenic ion implantation,
 
@@ -725,7 +731,10 @@ Firstly before that we need to remove the thin oxide which we added to expose ou
 After the process we will result in this,
 
 ![image](https://github.com/user-attachments/assets/75751120-38d2-4d85-b6e2-a74d5c383c10)
-Next we will start building the local interconnect for which we will use titanium because of its low resitivity. We will deposit titanium using sputtering, the process by which the titanium is hit by argon gas which makes the titanium atoms sputter and deposit on to the substrate,
+
+## Sputtering
+
+we will start building the local interconnect for which we will use titanium because of its low resitivity. We will deposit titanium using sputtering, the process by which the titanium is hit by argon gas which makes the titanium atoms sputter and deposit on to the substrate,
 
 
 ![image](https://github.com/user-attachments/assets/ce567b0c-3331-43f8-b0b4-10af906860c6)
@@ -760,7 +769,7 @@ Next step is to deposit a blanket tungsten layer for good connection between lay
 ![image](https://github.com/user-attachments/assets/28cb156f-1158-42eb-bcd9-7da655f6aefe)
 Then again we go under CMP to planarize the layer,
 
-
+### Higher metal layer connections
 ![image](https://github.com/user-attachments/assets/2f3b3178-9cdd-4438-8d5a-4dcbf3b6aedf)
 Next step is to connect these tungsten to connect it to the higher metal layers,
 For which we lay down aluminium and use mask 13 to create the connecting wires,
@@ -801,7 +810,7 @@ There are a few observations:
 If the load felt by buffers at every load is the same, then the delay is the same.
 Similarly, identical buffers must be at the same level to make the clock delay the same or to keep the slack minimal.
 
-Setup timing analysis:
+## Setup timing analysis:
 We use an ideal clock first and then use a real clock for analysis.
 For now, let’s assume the clock frequency of F = 1 GHz and clock period T = 1/F = 1 ns.
 
@@ -1070,14 +1079,18 @@ As you can see below the merged lef file is created in the temp directory,
 ![image](https://github.com/user-attachments/assets/65381cc1-a5e4-4291-a664-cf0b003a9d37)
 
 One advantage in openlane is that all the parameters are updated on the fly that is as you change the setting and run the next command the new setting will be reflected in the design
+## Synthesis
 
 The next command is,
-run_synthesis
+> run_synthesis
+
 which will  invoke yosys and run abc command for us.
 On completion it prints the usage statistics like this,
 ![image](https://github.com/user-attachments/assets/c7cba9e7-fe44-4c37-a9ab-223107dd0921)
 You can get more information on,
+
 https://github.com/The-OpenROAD-Project/OpenLane
+
 https://www.youtube.com/watch?v=Vhyv0eq_mLU
 
 steps to characterize the synthesis result
@@ -1089,7 +1102,7 @@ And so % dflip flop is 1613/14876 x 100 = 10.84%
 And the run also create the report in the reports directory as seen below,
 ![image](https://github.com/user-attachments/assets/1c32a22e-82cd-4990-a1ef-7998b7e3c80a)
 
-The next stage is floor plan.
+## Floor plan.
 To run the automated flow we can use the command
 run_floorplan 
 
@@ -1123,7 +1136,7 @@ To visualize the created floorplan
 It pops out the window,  
 ![image](https://github.com/user-attachments/assets/eb6b40c4-1554-4820-b56e-509f08e11a65)
 
-Review of floor plan in magic
+## Review of floor plan in magic
 To zoom in press Z
 To select a particular block move the cursor to the block and press S
 To draw the box use left mouse click for bottom left corner and right click for top right corner
@@ -1140,6 +1153,7 @@ It occurs in two stages
 •	Detailed
 Global placement is coarse and not legalized while the detailed placement is legalized and timing analysed.
 
+## Placement
 To run the placement  the command is 
 run_placement
 
@@ -1300,7 +1314,7 @@ For all information about SkyWater and the PDK, please refer to the links below:
 https://github.com/google/skywater-pdk-sky130-raw-data  
 https://skywater-pdk.readthedocs.io/en/main/
 
-Next for exercise download,
+## Lab exercise
 
 In order to know what rule is violated in design 
 Select the are to be analyzed and command
@@ -1448,12 +1462,11 @@ Write_verilog
 To reflect the changes to the design.
 On any change we must do floorplan and placement again to reflect the changes.
 This cycle must be repeted until all timing violations are rectified.
-
+## clock tree synthesis
 The next step is to run clock tree synthesis
 Command : cts
 This will invoke tritoncts the opensource cts tool.
 Now 
-
 
 ![image](https://github.com/user-attachments/assets/405e0338-fce5-4180-be91-bf7ab5a9ddbc)
 
@@ -1514,7 +1527,7 @@ report_checks.
 This will give us the new stats.
 
 Now before doing further analysis we need to modify the used libraries and then re run the anlsysis and see the impact of the change in the design
-
+## power distribution network
 After all the analsysis the last step is to build the power distribution network
 To generate the netwokrkk the command is 
 gen_pdn
@@ -1559,7 +1572,7 @@ There are two types of routing
 
 
 
-
+## TritinRoute
 In the OpenLane flow, TritonRoute is the detailed router used after global routing is completed. Global routing provides an abstract connection plan by dividing the layout into coarse grids and estimating approximate paths between pins, ensuring that routing is feasible without conflicts. It doesn't consider exact wire shapes or design rules. Once global routing is complete, detailed routing with TritonRoute takes over to generate precise, design rule–compliant metal tracks and vias. It finalizes the actual physical wires, resolves congestion, and ensures that the design meets all layout constraints. TritonRoute plays a critical role in producing a manufacturable layout.
 
 The stats and log shows the effort take by the triton route to complete the routing like this,
@@ -1600,6 +1613,10 @@ And these are the various designs which we created are here,
 
 
 The final step will  be read_stef to do the post rout parasitic analysis.
+
+
+# conclusion
+
 
 
 
