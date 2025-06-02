@@ -68,23 +68,7 @@ For the backend flow, we will utilize **OpenLane** and the **SkyWater 130nm PDK*
 - [conclusion](#conclusion)
 
 # Theory
-## Introduction
 
-This repository documents the backend flow of VLSI design, assuming that we already have a fully verified RTL design that has been synthesized, verified, and for which a netlist has been generated and validated.
-
-In this repo, we will demonstrate how to transform the synthesized netlist into a complete physical design. The stages we will cover include:
-
-- Floorplanning  
-- Placement and Routing (PnR)  
-- Clock Tree Synthesis (CTS)  
-- Static Timing Analysis (STA)  
-- Design Rule Check (DRC)  
-
-We will use the **PicoRV32** — a small and stable RISC-V core — as our RTL design for this backend flow.
-
-Additionally, we will create a **standard cell library** that will be used to generate the netlist from the RTL code. We will analyze critical aspects of the design, such as **hold time**, **setup time**, and more.
-
-For the backend flow, we will utilize **OpenLane** and the **SkyWater 130nm PDK**.
 ## Introduction to QFN-48 Package, chip, pads, core, die and Ips
 ![image](https://github.com/user-attachments/assets/bdc4f0c6-fd47-4a44-81a6-af4c5e79d527)
 ## RISC-V Instruction Set Architecture (ISA)
