@@ -989,30 +989,438 @@ o	DRC clean routing
 The following shows the routing algorithm,
 ![image](https://github.com/user-attachments/assets/f1429c4a-f44c-4671-9c5e-0423a82cd6ab)
 
+# LAB
+## Directory setup : 
+
+![image](https://github.com/user-attachments/assets/f6adb59d-3746-4651-96ee-f526d4f89e39)
+
+![image](https://github.com/user-attachments/assets/7d99814c-f65e-43d8-a6c2-972438cb96ed)
+As it can be inferred from the above picture the sky130 has two folders namely,
+- Libs.ref – which contain all the reference file
+- Libs.tec – which contain all the technology related and tools related files
+
+
+![image](https://github.com/user-attachments/assets/38c3c3d2-bbd3-4c25-82af-51b3de34ec47)
+
+![image](https://github.com/user-attachments/assets/395f7ac9-d4d4-4a4c-be9e-2bade135260e)
+
+To invoke the openlane use the following,
+
+![image](https://github.com/user-attachments/assets/7ef155dc-d3a3-4420-86fd-a31baa3b043c)
+
+The contents of config.tcl
+ 
+![image](https://github.com/user-attachments/assets/e00c8db3-427f-475f-a05f-074a091560eb)
+
+The config.tcl has the highest priority and whatever setting is setup in this file will overwrite any setting of the openlane.
+![image](https://github.com/user-attachments/assets/444cc340-b4f0-4dde-94b9-6dcb998a4776)
+
+This step merges all the .lef files found in the design directory.
+
+## What is a .lef File?
+LEF = Library Exchange Format
+It provides a technology-agnostic description of cell layout geometry and routing resources. It's used primarily in floorplanning, placement, and routing stages of the physical design process.
+1. Standard Cell Abstracts
+•	Only boundary, pin location, and metal layer usage are included (not full transistor-level layouts).
+•	These abstracts allow fast placement and routing without full layout detail.
+2. Technology Information
+•	Track grids
+•	Via definitions
+•	Metal layer widths, spacings, and direction (horizontal/vertical)
+3. Macros (e.g., SRAM, PLL)
+•	Physical dimensions and placement obstructions
+•	Pin names, positions, and metal layer access
+4. Routing Blockages
+•	Helps routers avoid forbidden zones
+
+![image](https://github.com/user-attachments/assets/2d02a5ea-1072-4a4d-b711-bef765d64f6b)
+As you can see from the above figure after the execution of design prep command a new file named runs has been created. The contents of the runs folder are as follows,
+ 
+![image](https://github.com/user-attachments/assets/431bdc60-03ea-405c-83b0-72c1848534b5)
+
+And another important thing to note here is another config.tcl folder is present inside the newly created directory.
+
+As you can see below the merged lef file is created in the temp directory,
+ 
+![image](https://github.com/user-attachments/assets/65381cc1-a5e4-4291-a664-cf0b003a9d37)
+
+One advantage in openlane is that all the parameters are updated on the fly that is as you change the setting and run the next command the new setting will be reflected in the design
+
+The next command is,
+run_synthesis
+which will  invoke yosys and run abc command for us.
+On completion it prints the usage statistics like this,
+![image](https://github.com/user-attachments/assets/c7cba9e7-fe44-4c37-a9ab-223107dd0921)
+You can get more information on,
+https://github.com/The-OpenROAD-Project/OpenLane
+https://www.youtube.com/watch?v=Vhyv0eq_mLU
+
+steps to characterize the synthesis result
+![image](https://github.com/user-attachments/assets/a5a1e111-b405-4ff5-9024-54f8b4d4b4cf)
+Number of D flip flops used in the design here it is 1613.
+And total number of cells is 14876 
+And so % dflip flop is 1613/14876 x 100 = 10.84%
+
+And the run also create the report in the reports directory as seen below,
+![image](https://github.com/user-attachments/assets/1c32a22e-82cd-4990-a1ef-7998b7e3c80a)
+
+The next stage is floor plan.
+To run the automated flow we can use the command
+run_floorplan 
+
+The Readme.md file at the configuration directory consist of all the switches,variable and parameters that can be set in various stages of the design,
+ ![image](https://github.com/user-attachments/assets/3f7b6657-7dbd-42ef-ac57-2f2702a8b2f0)
+
+The configuration folder also contain 
+ ![image](https://github.com/user-attachments/assets/28d58791-45a3-47eb-9582-8bbbbe2def87)
+
+Various .tcl files which will contain the current and default values of the switches and  parameters
 
 
 
 
 
+After running the floorplan, we will receive the confirmation as,
+ 
+![image](https://github.com/user-attachments/assets/2cb84c30-f266-488f-863e-ecbcc29fbba0)
+
+And on the execution they also produce the output at the runs directory of the design with the current date as the file name as you can see below,
+ ![image](https://github.com/user-attachments/assets/4275b15e-2fbb-47ff-b7e3-32c69cf218bf)
+
+The floor plan is stored in the results directory where we can find .def file which contains the information,
+ ![image](https://github.com/user-attachments/assets/fa7d415a-bc09-46b9-afc6-98be15a0b032)
+
+The first line gives the die area. The units are given in microns
+
+To visualize the created floorplan  
+![image](https://github.com/user-attachments/assets/52e0bddc-6a68-4b84-9483-411cb32be286)
+
+It pops out the window,  
+![image](https://github.com/user-attachments/assets/eb6b40c4-1554-4820-b56e-509f08e11a65)
+
+Review of floor plan in magic
+To zoom in press Z
+To select a particular block move the cursor to the block and press S
+To draw the box use left mouse click for bottom left corner and right click for top right corner
+Apart from this we also a have another window which helps us to find more details about the currently highlighted component.
+If we wanted to know about component select the component and enter what in the Command line window to know about the detailed information of the block.
+
+The floor plan doesn’t place the standard cell but the standard cells are there placed at the lower left corner of the die as you can see below,
+ 
+![image](https://github.com/user-attachments/assets/ab4662ea-abdc-41fd-ac86-c2bab883a5c5)
+
+The next stage if placement
+It occurs in two stages
+•	Global 
+•	Detailed
+Global placement is coarse and not legalized while the detailed placement is legalized and timing analysed.
+
+To run the placement  the command is 
+run_placement
+
+our objective is to converge the overflow and optimize the half parameter wire length.
+![image](https://github.com/user-attachments/assets/00703e55-1153-4ff1-bffd-3985a9247b20)
+To view the placement execute the following command,
+ 
+![image](https://github.com/user-attachments/assets/203c5539-b456-4a44-9c5d-dc1a0e2f2ddc)
+![image](https://github.com/user-attachments/assets/b425b18d-a0f1-404e-895b-1a8972c6cb75)
+Openlane allows to change the parameters on the fly for example,
+If we want to change the way the I/O are placed,or anyother changes, you can play around with the below values,
+
+![image](https://github.com/user-attachments/assets/6c286e98-942a-48d8-ae58-9cb5eeed49aa)
+Set and change to new values and run the floor_plan again to see the reflected changes.
+Before proceeding further we will go indepth in creating a cell.
 
 
+## NGspice
+
+NGSpice is an open-source, powerful, and widely used circuit simulation tool based on the original SPICE (Simulation Program with Integrated Circuit Emphasis). It allows engineers, students, and researchers to simulate analog, digital, and mixed-signal electronic circuits. NGSpice supports a wide variety of analysis types including DC, AC, transient, noise, and parametric sweeps, making it ideal for verifying circuit behavior before physical implementation.
+
+NGSpice reads netlists (circuit descriptions) written in SPICE syntax, processes the component connections and models (like MOSFETs, BJTs, resistors, capacitors, etc.), and simulates how the circuit responds to various inputs and conditions. It also integrates well with tools like KiCad, Xyce, and LTspice, and supports scripting through TCL or embedding in Python/Matlab workflows. Thanks to its open-source nature, NGSpice is especially popular in academia and VLSI prototyping, where accessibility and flexibility are key.
+
+*** MODEL Descriptions ***
+.include "tsmc_025um_model.mod"  
+.LIB "tsmc_025um_model.mod" CMOS_MODELS
+
+*** NETLIST Description ***
+* CMOS Inverter  
+M1 out in vdd vdd pmos W=0.375u L=0.25u  
+M2 out in 0   0   nmos W=0.375u L=0.25u  
+
+* Load Capacitance  
+Cload out 0 10f  
+
+* Power Supply  
+Vdd vdd 0 2.5  
+Vin in  0 0  
+
+*** SIMULATION Commands ***
+.op  
+.dc Vin 0 2.5 0.05  
+.end  
+
+🧾 Netlist Explanation  
+*** MODEL Descriptions ***  
+.include "tsmc_025um_model.mod"  
+.LIB "tsmc_025um_model.mod" CMOS_MODELS  
+•	`.include` loads the SPICE model file (e.g., transistor characteristics like threshold voltage, mobility) from the specified file.  
+•	`.LIB` selects a specific library section (here, CMOS_MODELS) from that model file. This activates the transistor models used in your circuit.  
+
+________________________________________  
+*** NETLIST Description ***  
+* CMOS Inverter  
+M1 out in vdd vdd pmos W=0.375u L=0.25u  
+M2 out in 0   0   nmos W=0.375u L=0.25u  
+•	These lines define two MOSFETs forming a CMOS inverter:  
+o	M1: A PMOS transistor, with:  
+	drain = out, gate = in, source = vdd, body = vdd.  
+	Width W = 0.375µm, Length L = 0.25µm.  
+o	M2: An NMOS transistor, with:  
+	drain = out, gate = in, source = 0 (ground), body = 0.  
+	Also with W = 0.375µm, L = 0.25µm.  
+•	Together, M1 and M2 implement a standard CMOS inverter.  
+
+________________________________________  
+* Load Capacitance  
+Cload out 0 10f  
+•	Defines a load capacitor of 10 femtofarads between the output (out) and ground.  
+•	This models the parasitic or connected load at the output.  
+
+________________________________________  
+* Power Supply  
+Vdd vdd 0 2.5  
+Vin in  0 0  
+•	Vdd: A DC voltage source providing 2.5V to the vdd node (power supply).  
+•	Vin: Input voltage source for the inverter. It's initialized at 0V but will be swept later.  
+
+________________________________________  
+*** SIMULATION Commands ***  
+.op  
+.dc Vin 0 2.5 0.05  
+•	`.op`: Requests the operating point analysis, giving DC voltages/currents at each node before sweeping.  
+•	`.dc`: Performs a DC sweep of Vin from 0V to 2.5V in 0.05V steps, allowing you to observe how the inverter output behaves as input changes.  
+
+________________________________________  
+.end  
+•	Marks the end of the SPICE file.  
+
+Procedure for working with NGSPICE,  
+1. Source  
+•  
+
+2. To execute the command is  
+run  
+
+3. Set plot  
+Which lists the available plots  
+
+4. On entering the required plot  
+
+5. Type in the nodes which need to be visualized.  
+
+![image](https://github.com/user-attachments/assets/aed8b834-915d-4965-8046-adb7083f7296)
+
+Creating cell.
+Git clone from 
+https://github.com/nickson-jose/vsdstdcelldesign.git
+
+To develop a inverter cell from scratch please refer to the above git.
+then copy the .tech file from the pdk/magic directory to the newly cloned directory and then visualize the inverter in magic.
+![image](https://github.com/user-attachments/assets/5c9f1f40-ff8b-4b4e-819e-93b5c2202ca9)
+
+![image](https://github.com/user-attachments/assets/5f334fbe-e7ac-4ba0-89e8-c7ec79437973)
+The above image is colour palete which describes the various layers used in the design 
+
+To verify that our design is correct we must extract the spice model from the physical design, which can be done in the following way,
+![image](https://github.com/user-attachments/assets/9545e93a-83f8-499f-8b94-ad1aeccd6ee5)
+To extract the spice model,
+Execute
+ext2spice cthresh 0 rthresh 0
+ext2spice
+which will create a .spice model as below
+
+![image](https://github.com/user-attachments/assets/1ee2c58c-8631-443e-9e76-17dd3e24610c)
+![image](https://github.com/user-attachments/assets/39f5b00c-cc1c-4ee3-bfcf-136239c967ef)
+
+So now to check the spice make the following changes
+
+![image](https://github.com/user-attachments/assets/686b1ebf-7cf4-4e59-8fdb-b55f2963ecbd)
+
+By executing the spice file using ngspice and plotting the graphs we could see,
+
+![image](https://github.com/user-attachments/assets/3abcf7dc-77dc-4ec0-a7a2-b8e6de8a8c9d)
+
+We could infer the rise time delay and fall time delay by comparing the 50% values of both input and output.
+
+Next is to explore the Magic tool.  
+For all information about Magic, please refer to the below link:  
+http://opencircuitdesign.com/magic/index.html
+
+The technology file is one single file that tells all about the design to the tool. It tells a lot of things like:  
+- All layers  
+- Colours  
+- Patterns  
+- DRC rules  
+- Device extraction rules  
+- Rules to read and write DEF and LEF files  
+
+**CIF – Caltech Intermediate Format**  
+It is a human-readable ASCII format of the GDS format. It was once used earlier and is sometimes used instead of GDS in the Magic tool.
+
+The basic DRC rules are called edge-based rules. They work by finding the edge between two layers and checking in front or behind if anything violates the rule.  
+To know more about DRC rules, please refer to:  
+http://opencircuitdesign.com/magic/index.html
+
+For all information about SkyWater and the PDK, please refer to the links below:  
+https://github.com/google/skywater-pdk-sky130-raw-data  
+https://skywater-pdk.readthedocs.io/en/main/
+
+Next for exercise download,
+
+In order to know what rule is violated in design 
+Select the are to be analyzed and command
+drc why
+to see what is the error like this,
+![image](https://github.com/user-attachments/assets/2bb98653-d261-42cb-b9be-deb7f7cf685a)
+Lab exercise 1 to fix poly.9
+First measure the distance
+![image](https://github.com/user-attachments/assets/d4507a5c-a9ad-4e24-9095-76af20361405)
+
+The distance is less than the value but not been flagged so we edit the tech 
+To include these in the DRC and then check back again after which we can see
+![image](https://github.com/user-attachments/assets/11c348fd-4a49-41c9-befd-2c4ccd6903c6)
+As you can note now the errors are shown.
+Challenging DRC error
+It is something that can be described any single rule check.
+For this we need to use Boolean operator like or/and/not and filter out.
+For example the nwell.6 rule state that every deep nwell must be surrounded by a normal nwell  layer by atleast the default unit.
+
+![image](https://github.com/user-attachments/assets/8175be8b-ba52-473f-95a4-7eed764b816a)
+
+See the drc is not flagged for which
+And the Boolean operators are used like this,
+
+![image](https://github.com/user-attachments/assets/0ae309fe-f0a8-4b16-8e4d-207a417a8f19)
+Now let’s get back to the OpenLane flow and use the libraries we created.  
+Firstly, for placement we do not need all the information about the standard cell, and thus we do not need the `.mag` file. This is where the `.lef` file comes in, which just has the I/O pins, area, power rails, and essential information.
+
+Now let’s extract the `.lef` file from the `.mag` file.
+
+These are a few guidelines for the standard cell:
+• The I/O ports must lie on the intersection of vertical and horizontal tracks.  
+• The width of the standard cell must be an odd multiple of track pitch.  
+• The height must be an odd multiple of vertical pitch.  
+We can get the tracks info at 
+![image](https://github.com/user-attachments/assets/1715e173-b787-452a-abf6-09f1b97a8795)
+![image](https://github.com/user-attachments/assets/5448b10e-d8fb-4319-a8ba-bfab1379bfc0)
+First turn on the grid,
+![image](https://github.com/user-attachments/assets/a497fedc-1e6c-42e2-be27-c16410d9a593)
+To check is the i/O ports are at the tracks,
+![image](https://github.com/user-attachments/assets/32ab1290-1e2a-4157-8acf-f3539fc46c6d)
+On enter we could see that the grids have changed to,
+![image](https://github.com/user-attachments/assets/64937429-d9c1-440a-adbe-0236f6142606)
+Also from the same grids we could infer that if the cells width and length are in odd multiples by counting the grids.
+
+The next step is to define ports in the design for which please refer to the following,
+https://github.com/nickson-jose/vsdstdcelldesign?tab=readme-ov-file#create-port-definition
+
+the next port is to define the purpose of each port,
+![image](https://github.com/user-attachments/assets/b85b2fac-591c-4bd0-b973-edf88dd9b5aa)
+We define in the same way for all,
+![image](https://github.com/user-attachments/assets/f30a3f49-0da8-4348-aa48-21438d09ead7)
+Lets save it using a custom name using the
+Save 
+Command
+For ease of use I have used the name as AAA_LSR_inv.mag
+The AAA is used because I wanted to list it at the top in stat and followed by my name and inverter.
+
+Now we have our new file, lets extract the lef file from the mag using command
+lef write
+![image](https://github.com/user-attachments/assets/f975fcd5-2725-4339-b517-4e52be3d06d2)
+It creates a lef file in the directory as,
+ ![image](https://github.com/user-attachments/assets/074a3fdf-ba41-44a4-8454-b3a746f6b11c)
+
+Which contains
+ 
+![image](https://github.com/user-attachments/assets/7f7f89d4-14bc-4ee2-98c8-0b7cf132b648)
+
+Now lets include our custom cell into the openlane flow.
+For this the first step is to copy the libraries.
+There are different flaovours of library,
+Typical fast and slow we must copy all these into the SRC file.
+![image](https://github.com/user-attachments/assets/83d558ff-e943-4db9-a5d0-a30a894d1122)
+![image](https://github.com/user-attachments/assets/318197bf-28e2-4041-a242-e9e1cb62bc18)
+![image](https://github.com/user-attachments/assets/abdc88b4-041f-44df-a8a8-64e731e4858b)
+These three different types of library each has definition of our cell.
+As you can see these are named differently the names are named according to the following convention.
+
+## Library naming convention
+PVT :
+•	P – process
+•	V – voltage
+•	T – temperature
+### Name  : “sky130_fd_sc_hd_tt_025C_1v80”
+here,
+>fd  -- foundry  -- meaning cells are model according to the foundry specification.
+
+> Sc – standard cell 
+
+> Hd – high density – this indicates that the library is optimized for minimal area.
+
+> 025C – meaning the standard verified temperature is 25 degree centigrade
+
+> 1v80 – the operating  voltage is 1.8 V .
+
+After copying the src looks like this,
+![image](https://github.com/user-attachments/assets/a5f84db4-0111-4b7b-ab7f-0e95a55b9629)
+Next we must modify the config.tcl to include the lef file during the flow for which make the following change
+![image](https://github.com/user-attachments/assets/c596fb67-4c15-4d2d-bc2e-bb7b9eba8691)
+Next we invoke the openlane 
+![image](https://github.com/user-attachments/assets/dd6bb44b-b792-480c-8033-f27fa60f0440)
+After the regular process we must also include the below lines for the dditonal .lef file to be included in the flow.
+ 
+![image](https://github.com/user-attachments/assets/04a6e05d-bfc8-48ef-bf5d-c7a0a9ee79bc)
+
+As you see in the stat  
+![image](https://github.com/user-attachments/assets/19286d39-5b27-48e0-97e1-d7beaedfdcde)
+
+That we have successfully included our own inverter into the design.
+But as we can wee there is a negative violation of  
+-711.59
+![image](https://github.com/user-attachments/assets/818408f4-1fde-40c3-99d2-64c1684d3f8a)
+
+Ok lets change the strategy 
+![image](https://github.com/user-attachments/assets/c190e619-aea4-4b10-b5bc-b716e44fcedd)
+ 
+Aftr changing few more paramters we have achieved 
+![image](https://github.com/user-attachments/assets/526a0c75-9612-4dc3-b7c8-644d2e0aa21f)
+ 
+The new stats is,
+![image](https://github.com/user-attachments/assets/dbf869e2-e51c-4e78-82df-cf24aef18f26)
+Next step is to run floor plan and placement
+Here is the output,
+
+![image](https://github.com/user-attachments/assets/4b8bab61-06d1-450f-855b-fe19da9b55dd)
+The next process is to perform STA for which we will se open STA.
+For which we need to follow the below procedres,
+![image](https://github.com/user-attachments/assets/b2180311-6c4a-4ac2-810c-c2f2e5995bb3)
+ 
+And the command is 
+![image](https://github.com/user-attachments/assets/57d82ad8-9321-42ca-ae84-349cff2f76d5)
+Which gives a detailed timing report like this 
 
 
+Which can be used to optimize the design.
+We can also use replace command to replace a slower cell with a faster cell but since we have zero slack already it is being skipped. But if modification are done we must use
+Write_verilog 
+To reflect the changes to the design.
+On any change we must do floorplan and placement again to reflect the changes.
+This cycle must be repeted until all timing violations are rectified.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+The next step is to run clock tree synthesis
+Command : cts
+This will invoke tritoncts the opensource cts tool.
+Now 
 
 
 
