@@ -1,28 +1,5 @@
 # VSD_OpenLane_Sky130_Workshop
-## contents
-- Introduction
-- Introduction to QFN-48 Package, chip, pads, core, die and Ips
-- RISC-V Instruction Set Architecture (ISA)
-- Software to hardware
-- Introduction to all components of open-source digital asic design
-- RTL IPs and EDA Tools
-- What is a PDK?
-- Historical Context
-- What a PDK Includes
-- Open Source ASIC
-- The RTL to GDSII flow
-- Introduction to open lane
-- openlane ASIC flow
-- Antenna Rules
-- Utilization Factor and Aspect Ratio
-- preplaced cells
-- Power Grid
-- Circuit
-- Pin Placement
-- Binding with the Netlist
-- Placement
-- Library characterization
-- 
+
 ## Introduction
 
 This repository documents the backend flow of VLSI design, assuming that we already have a fully verified RTL design that has been synthesized, verified, and for which a netlist has been generated and validated.
