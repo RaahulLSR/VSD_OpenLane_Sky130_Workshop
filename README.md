@@ -1,5 +1,28 @@
 # VSD_OpenLane_Sky130_Workshop
-
+## contents
+- Introduction
+- Introduction to QFN-48 Package, chip, pads, core, die and Ips
+- RISC-V Instruction Set Architecture (ISA)
+- Software to hardware
+- Introduction to all components of open-source digital asic design
+- RTL IPs and EDA Tools
+- What is a PDK?
+- Historical Context
+- What a PDK Includes
+- Open Source ASIC
+- The RTL to GDSII flow
+- Introduction to open lane
+- openlane ASIC flow
+- Antenna Rules
+- Utilization Factor and Aspect Ratio
+- preplaced cells
+- Power Grid
+- Circuit
+- Pin Placement
+- Binding with the Netlist
+- Placement
+- Library characterization
+- 
 ## Introduction
 
 This repository documents the backend flow of VLSI design, assuming that we already have a fully verified RTL design that has been synthesized, verified, and for which a netlist has been generated and validated.
@@ -152,7 +175,8 @@ If the total die area is equal to the area occupied by the logic gate it is 100%
 ![image](https://github.com/user-attachments/assets/d474e4f2-f082-4fc2-ae5c-ae2ef4ae5f4a)
 If aspect ratio is 1 then it is a square.
 
-2. The second step is to define the location of preplaced cells.  
+## preplaced cells
+The second step is to define the location of preplaced cells.  
 Sometimes, we need to split up single logic into two individual blocks by separating the logic and extending the I/O pins, and then black boxing the logic.  
 These blocks are called IPs, which are available as black boxes. These are placed in the floor in specific user-defined locations and cannot be altered by the tool. These are called **preplaced cells**.  
 All preplaced cells are implemented once and used multiple times.  
@@ -171,6 +195,7 @@ And this is how the preplaced cells are placed,
 As we have seen above we have taken care about the local communication. Lets black box the whole cell,
 ![image](https://github.com/user-attachments/assets/564de8ab-d115-484f-bc69-ab70c4a6d13c)
 
+## Power Grid
 Now we will see about the global placement. It is not feasible to add decoupling capacitance to all the components in the die. It is used only to few specific and sensitive components that needs to  be isolated from the main supply. But how to over come the same problem for other signal lines. 
 
 ![image](https://github.com/user-attachments/assets/ada0f197-77fd-461e-8808-7fbe82e297ea)
@@ -225,7 +250,7 @@ The final circuit looks like this:
 Here is the final design,
 ![image](https://github.com/user-attachments/assets/707edeed-0e03-49e1-9c2a-e7a3f07ee0d4)
 
-Library characterization
+## Library characterization
 One common things that travel throughout all the stages of the backend flow is the library so we need to know all things about library
 
 ![image](https://github.com/user-attachments/assets/f66b8e25-a9cb-47f3-b994-7e5ade31ab86)
